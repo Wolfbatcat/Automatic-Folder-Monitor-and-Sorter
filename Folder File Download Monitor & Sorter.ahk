@@ -27,18 +27,24 @@
 
 	;What filetypes belong to what group, and what their folder name should be sorted into.
 		FiletypeObjectArray := [] ;Array needs to be initiated first to work.
-		PushFiletypeToArray(FiletypeObjectArray,["zip","7z","rar","r00","001"], "Compressed")
-		PushFiletypeToArray(FiletypeObjectArray,["jpg","bmp","gif","gifv","webm","png","jpeg","swf","tga","tiff","exr","psd"], "Images")
-		PushFiletypeToArray(FiletypeObjectArray,["txt","nfo","rtf","pdf","docx","doc"], "Documents")
-		PushFiletypeToArray(FiletypeObjectArray,["mp3","flac","wav"], "Audio")
-		PushFiletypeToArray(FiletypeObjectArray,["avi","mpg","mpeg","mov","mp4","mkv","wmv"], "Videos")
-		PushFiletypeToArray(FiletypeObjectArray,["exe","msi","jar","cmd","bat","ahk"], "Programs")
+		PushFiletypeToArray(FiletypeObjectArray, ["zip","7z","rar","r00","001"], "Compressed")
+		PushFiletypeToArray(FiletypeObjectArray, ["jpg", "bmp", "gif", "gifv", "webm", "png", "jpeg", "swf", "tga", "tiff", "exr", "psd"], "Images")
+		PushFiletypeToArray(FiletypeObjectArray, ["txt", "nfo", "rtf", "pdf", "docx", "doc", "pptx", "ppt"], "Documents")
+		PushFiletypeToArray(FiletypeObjectArray, ["xlsx", "xls", "csv"], "Spreadsheets")
+		PushFiletypeToArray(FiletypeObjectArray, ["mp3", "flac", "wav", "ogg"], "Audio")
+		PushFiletypeToArray(FiletypeObjectArray, ["avi", "mpg", "mpeg", "mov", "mp4", "mkv", "wmv"], "Videos")
+		PushFiletypeToArray(FiletypeObjectArray, ["exe", "msi", "jar", "cmd", "bat", "ahk", "sh"], "Programs")
+		PushFiletypeToArray(FiletypeObjectArray, ["ttf", "otf", "woff"], "Fonts")
+		PushFiletypeToArray(FiletypeObjectArray, ["cpp", "java", "py", "html", "css", "js"], "Code")
+		PushFiletypeToArray(FiletypeObjectArray, ["sqlite", "mdb", "sql"], "Databases")
+		PushFiletypeToArray(FiletypeObjectArray, ["ini", "conf", "json", "xml"], "Configuration")
+		PushFiletypeToArray(FiletypeObjectArray, ["bak"], "Backup")
 
 ;---------------------------------------------------------------------------------------------------------------------------------------;
 ; Main
 ;---------------------------------------------------------------------------------------------------------------------------------------;
 ;Start the folder monitor
-	WaitTimeBetweenScans := HowOftenToScanInSeconds * 1000
+	WaitTimeBetweenScans := HowOftenToScanInSeconds * 60
 	SetTimer, SearchFiles, %WaitTimeBetweenScans%
 	GoSub,SearchFiles ; Immediately do a scan
 	return
@@ -65,25 +71,31 @@
 		
 		RemoveEmptyFolders(Folder)
 		{
-			global Tooltips
-			Loop, %Folder%\*, 2, 1
-			{
-			  FL := ((FL<>"") ? "`n" : "" ) A_LoopFileFullPath
-				Sort, FL, R D`n ; Arrange folder-paths inside-out
-				Loop, Parse, FL, `n
-				{
-				  FileRemoveDir, %A_LoopField% ; Do not remove the folder unless is  empty
-				  If ! ErrorLevel
-					{
-					   Del := Del+1,  RFL := ((RFL<>"") ? "`n" : "" ) A_LoopField
-						if Tooltips
-						{
-							Tooltip,Removing empty folder %FL%
-							SetTimer, RemoveToolTip, 3000
-						}
-					}
-				}
-			}
+		    global Tooltips
+		    ExcludedFolders := "Documents Spreadsheets Programs Compressed Videos Images Audio" ; Folders to exclude
+		    Loop, %Folder%\*, 2, 1
+		    {
+		        FL := ((FL<>"") ? "`n" : "" ) A_LoopFileFullPath
+		        Sort, FL, R D`n ; Arrange folder-paths inside-out
+		        Loop, Parse, FL, `n
+		        {
+		            FolderToCheck := A_LoopField
+		            ; Check if the folder is in the list of excluded folders
+		            if (!InStr(ExcludedFolders, FolderToCheck))
+		            {
+		                FileRemoveDir, %FolderToCheck% ; Do not remove the folder unless it is empty
+		                If !ErrorLevel
+		                {
+		                    Del := Del+1, RFL := ((RFL<>"") ? "`n" : "" ) A_LoopField
+		                    if Tooltips
+		                    {
+		                        Tooltip, Removing empty folder %FL%
+		                        SetTimer, RemoveToolTip, 3000
+		                    }
+		                }
+		            }
+		        }
+		    }
 		}
 		return
 		
