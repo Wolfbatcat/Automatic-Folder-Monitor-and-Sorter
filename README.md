@@ -1,4 +1,15 @@
 # Automatic Folder Monitor & File Sorter
+
+## Modifications:
+
+I've modified xcloudx01's AutoKey script to:
+  1. Run every 10 seconds instead of 60.
+  2. Expand the list of recognized file types to cover more common formats.
+  3. Add categories for spreadsheets, fonts, code, databases, configuration files, and backup files.
+  4. Exclud the categorical folders from removal if they are empty.
+
+------------------
+
 ## Overview:
 
 This tool takes the hassle out of manually sorting your downloads folder, or any other folder you tend to just throw files into.
