@@ -1,6 +1,6 @@
 # Automatic Folder Monitor & File Sorter
 
-## Modifications:
+## Key Changes:
 
 A modified version of xcloudx01's AutoKey script that:
   1. Runs every 10 seconds instead of 60.
