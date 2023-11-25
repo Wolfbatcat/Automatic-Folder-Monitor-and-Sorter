@@ -2,11 +2,11 @@
 
 ## Modifications:
 
-I've modified xcloudx01's AutoKey script to:
-  1. Run every 10 seconds instead of 60.
-  2. Expand the list of recognized file types to cover more common formats.
-  3. Add categories for spreadsheets, fonts, code, databases, configuration files, and backup files.
-  4. Exclud the categorical folders from removal if they are empty.
+A modified version of xcloudx01's AutoKey script that:
+  1. Runs every 10 seconds instead of 60.
+  2. Expands the list of recognized file types to cover more common formats.
+  3. Adds categories for spreadsheets, fonts, code, databases, configuration files, and backup files.
+  4. Excludes the categorical folders from removal if they are empty.
 
 ------------------
 
