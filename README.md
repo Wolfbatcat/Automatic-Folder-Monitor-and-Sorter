@@ -4,10 +4,11 @@
 A modified version of xcloudx01's AutoKey script that:
   1. Expands the list of recognized file types to cover more common formats.
   2. Adds categories for spreadsheets, fonts, code, databases, configuration files, and backup files.
-  3. Excludes the categorical folders from removal if they are empty.
-  4. Moves extracted files to the Processed folder. If DeleteZipFileAfterExtract = 0, the archive will go to the Compressed folder.
-  5. Fixed the infinite loop that occurs when DeleteZipFileAfterExtract = 0.
-  6. Runs every 10 seconds instead of 60.
+  3. Allows for skipping individual files from the script altogether if the word "skip" is detected in the filename (case-insensitive). Useful for mods installed in their archive forms.
+  4. Excludes the categorical folders from removal if they are empty.
+  5. Moves extracted files to the Processed folder. If DeleteZipFileAfterExtract = 0, the archive will go to the Compressed folder.
+  6. Fixed the infinite loop that occurs when DeleteZipFileAfterExtract = 0.
+  7. Runs every 10 seconds instead of 60.
 
 
 ------------------
