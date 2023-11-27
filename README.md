@@ -27,7 +27,7 @@ Fully customizable to suit your needs!
 4. Change the "MonitoredFolder" value near the top of the script to point to the folder that you want to be monitored for changes.
 5. Change "UnzipTo" value to point to where you want zip files to be unzipped to.
 5. Change "HowOftenToScanInSeconds" To how often it should check if anything within the folder has changed.
-6. Change the "7ZipLocation" to point to where your 7zip's 7z.exe is.
+6. Change the "7ZipLocation" to point to where your 7zip's 7z.exe is. Note: If using Easy 7-Zip, the 7z.exe is in the Easy 7-Zip folder, NOT the 7-Zip folder.
 7. Under the "Destination folders" section, you can change where files that match a specific file type will be placed. Eg MoveImagesTo = %MonitoredFolder%\Images
 
 ## Adding more file types to a category
