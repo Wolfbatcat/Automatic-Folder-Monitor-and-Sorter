@@ -191,33 +191,33 @@
 ;---------------------------------------------------------------------------------------------------------------------------------------;
 ; Subroutines
 ;---------------------------------------------------------------------------------------------------------------------------------------;
-	;Main
-		SearchFiles:
-		Loop, Files, %MonitoredFolder%\*
-		{
-			DestinationFolder := GetDestination(A_LoopFileFullPath)
-			if (DestinationFolder = "Compressed")
-				UnZip(A_LoopFileName,A_LoopFileDir,A_LoopFileFullPath)
-			else if DestinationFolder
-			{
-				DestinationFolder := MonitoredFolder . "\" . DestinationFolder
-				MakeFolderIfNotExist(DestinationFolder)
-				FileMove,%A_LoopFileFullPath%,%DestinationFolder%\*.*,%OverWrite% ; *.* is needed else it could be renamed to no extension! (If dest folder failed)
-					if Tooltips
-					{
-						Tooltip,Moving %A_LoopFileName% > %DestinationFolder%
-						SetTimer, RemoveToolTip, 3000
-					}
-			}
-		}
-		if RemoveEmptyFolders
-			RemoveEmptyFolders(MonitoredFolder)
-		FindZipFiles(MonitoredFolder,"Compressed")
+	; Main
+	    SearchFiles:
+	    Loop, Files, %MonitoredFolder%\\*
+	    {
+	        DestinationFolder := GetDestination(A_LoopFileFullPath)
+	        if (DestinationFolder = "Compressed")
+	        {
+	            ; Check if the file name contains 'skip' (case-insensitive)
+	            if InStr(A_LoopFileName, "skip", false, 1)
+	                continue  ; Skip this file
 	
-	;Other
-		RemoveToolTip:
-			SetTimer, RemoveToolTip, Off
-			ToolTip
-		return
-
-^Esc::ExitApp
+	            UnZip(A_LoopFileName, A_LoopFileDir, A_LoopFileFullPath)
+	        }
+	        else if DestinationFolder
+	        {
+	            DestinationFolder := MonitoredFolder . "\\" . DestinationFolder
+	            MakeFolderIfNotExist(DestinationFolder)
+	            FileMove,%A_LoopFileFullPath%,%DestinationFolder%\\*.*,%OverWrite%
+	            if Tooltips
+	            {
+	                Tooltip, Moving %A_LoopFileName% > %DestinationFolder%
+	                SetTimer, RemoveToolTip, 3000
+	            }
+	        }
+	    }
+	    if RemoveEmptyFolders
+	        RemoveEmptyFolders(MonitoredFolder)
+	    FindZipFiles(MonitoredFolder,"Compressed")
+	
+	^Esc::ExitApp
