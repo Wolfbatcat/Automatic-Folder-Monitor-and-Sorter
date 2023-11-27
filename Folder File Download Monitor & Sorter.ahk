@@ -20,7 +20,7 @@
 		RemoveEmptyFolders = 1 ;Delete any folders in the monitored folder that are now empty. (recursive)
 
 	;Zip files
-		7ZipLocation = C:\Program Files\7-Zip\7z.exe ;Needed to provide unzipping functionality.
+		7ZipLocation = D:\Program Files\7-Zip\7z.exe ;Needed to provide unzipping functionality.
 		OpenExtractedZip = False ;Open the folder up after extraction has finished?
 		DeleteZipFileAfterExtract = 1 ;Recycle the zip file after a successful extract.
 		UnzipSuccessSound = 1 ;Play a jingle when unzipped something.
