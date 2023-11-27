@@ -1,4 +1,4 @@
-﻿;---------------------------------------------------------------------------------------------------------------------------------------;
+;---------------------------------------------------------------------------------------------------------------------------------------;
 ; Initialization
 ;---------------------------------------------------------------------------------------------------------------------------------------;
 	#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
@@ -12,17 +12,19 @@
 ; User Variables
 ;---------------------------------------------------------------------------------------------------------------------------------------;
 	;Behaviour
-		MonitoredFolder = D:\Downloads
-		UnzipTo = D:\Downloads\Compressed
-		HowOftenToScanInSeconds = 60 ;How long we wait before re-scanning the folder for any changes.
+		MonitoredFolder = C:\Downloads ;Folder to be monitored
+		ProcessedFolder = C:\Downloads\Processed ; Extracted files go here
+		CompressedFolder = C:\Downloads\Compressed ; Old archives are moved here
+		UnzipTo = ProcessedFolder
+		HowOftenToScanInSeconds = 10 ;How long we wait before re-scanning the folder for any changes.
 		ToolTips = 1 ;Show helper popups showing what the program is doing.
 		OverWrite = 1 ;Overwrite duplicate files?
 		RemoveEmptyFolders = 1 ;Delete any folders in the monitored folder that are now empty. (recursive)
 
 	;Zip files
-		7ZipLocation = D:\Program Files\7-Zip\7z.exe ;Needed to provide unzipping functionality.
+		7ZipLocation = C:\Program Files\7-Zip\7z.exe ;Needed to provide unzipping functionality.
 		OpenExtractedZip = False ;Open the folder up after extraction has finished?
-		DeleteZipFileAfterExtract = 1 ;Recycle the zip file after a successful extract.
+		DeleteZipFileAfterExtract = 0 ;Recycle the zip file after a successful extract.
 		UnzipSuccessSound = 1 ;Play a jingle when unzipped something.
 
 	;What filetypes belong to what group, and what their folder name should be sorted into.
@@ -44,7 +46,7 @@
 ; Main
 ;---------------------------------------------------------------------------------------------------------------------------------------;
 ;Start the folder monitor
-	WaitTimeBetweenScans := HowOftenToScanInSeconds * 60
+	WaitTimeBetweenScans := HowOftenToScanInSeconds * 1000
 	SetTimer, SearchFiles, %WaitTimeBetweenScans%
 	GoSub,SearchFiles ; Immediately do a scan
 	return
@@ -71,33 +73,42 @@
 		
 		RemoveEmptyFolders(Folder)
 		{
-		    global Tooltips
-		    ExcludedFolders := "Documents Spreadsheets Programs Compressed Videos Images Audio" ; Folders to exclude
-		    Loop, %Folder%\*, 2, 1
-		    {
-		        FL := ((FL<>"") ? "`n" : "" ) A_LoopFileFullPath
-		        Sort, FL, R D`n ; Arrange folder-paths inside-out
-		        Loop, Parse, FL, `n
-		        {
-		            FolderToCheck := A_LoopField
-		            ; Check if the folder is in the list of excluded folders
-		            if (!InStr(ExcludedFolders, FolderToCheck))
-		            {
-		                FileRemoveDir, %FolderToCheck% ; Do not remove the folder unless it is empty
-		                If !ErrorLevel
-		                {
-		                    Del := Del+1, RFL := ((RFL<>"") ? "`n" : "" ) A_LoopField
-		                    if Tooltips
-		                    {
-		                        Tooltip, Removing empty folder %FL%
-		                        SetTimer, RemoveToolTip, 3000
-		                    }
-		                }
-		            }
-		        }
-		    }
+			global Tooltips
+			global FiletypeObjectArray
+			Loop, %Folder%\*, 2, 1
+			{
+				FL := ((FL<>"") ? "`n" : "" ) A_LoopFileFullPath
+				Sort, FL, R D`n ; Arrange folder-paths inside-out
+				Loop, Parse, FL, `n
+				{
+					; Check if the current folder is in the FiletypeObjectArray
+					isInArray := false
+					for index, obj in FiletypeObjectArray
+					{
+						if (A_LoopField contains obj.Destination)
+						{
+							isInArray := true
+							break
+						}
+					}
+					; If the current folder is not in the FiletypeObjectArray, remove it
+					if (!isInArray)
+					{
+						FileRemoveDir, %A_LoopField% ; Do not remove the folder unless is  empty
+						If ! ErrorLevel
+						{
+							Del := Del+1,  RFL := ((RFL<>"") ? "`n" : "" ) A_LoopField
+							if Tooltips
+							{
+								Tooltip,Removing empty folder %FL%
+								SetTimer, RemoveToolTip, 3000
+							}
+						}
+					}
+				}
+			}
+			return
 		}
-		return
 		
 		FindZipFiles(Folder,GoalObjectDestination)
 		{
@@ -124,16 +135,19 @@
 						}
 					}
 			}
+			return
 		}
-		return
 		
 		UnZip(FileFullName,Dir,FullPath)
 		{
+			if (InStr(FileFullName, "skip")) ; Skip files with "skip" in the name
+				return
 			global 7ZipLocation ;Saves having to re-pass this dir each time you use this function.
 			global DeleteZipFileAfterExtract
 			global OpenExtractedZip
 			global Tooltips
-			global UnzipTo
+			global ProcessedFolder ; Extracted files go here
+			global CompressedFolder ; Old archives are moved here
 			global UnzipSuccessSound
 			
 			;Get filename
@@ -144,21 +158,26 @@
 					Tooltip,Unzipping %FileName% > %Dir%\%FileName%
 					SetTimer, RemoveToolTip, 3000
 				}
-				MakeFolderIfNotExist(UnzipTo . "\" . FileName)
-				Runwait, "%7ZipLocation%" x "%FullPath%" -o"%UnzipTo%\%FileName%"
+				MakeFolderIfNotExist(ProcessedFolder . "\" . FileName)
+				Runwait, "%7ZipLocation%" x "%FullPath%" -o"%ProcessedFolder%\%FileName%"
 			sleep,2000
 			
-			IfExist %UnzipTo%\%FileName%
+			IfExist %ProcessedFolder%\%FileName%
 			{
 				if DeleteZipFileAfterExtract
 					Filerecycle, %FullPath%
+				else
+				{
+					MakeFolderIfNotExist(CompressedFolder) ; Ensure the CompressedFolder exists
+					FileMove, %FullPath%, %CompressedFolder% ; Move the old archive to the CompressedFolder
+				}
 				if OpenExtractedZip
-					run, %UnzipTo%\%FileName%
+					run, %ProcessedFolder%\%FileName%
 				if UnzipSuccessSound
 					soundplay, *64
 			}
 			else
-				msgbox,,Oh Noes!,Something went wrong and I couldn't unzip %FileName% to %UnzipTo%\%FileName%
+				msgbox,,Oh Noes!,Something went wrong and I couldnt unzip %FileName% to %ProcessedFolder%\%FileName%
 		}
 
 		
@@ -195,6 +214,8 @@
 		SearchFiles:
 		Loop, Files, %MonitoredFolder%\*
 		{
+			if (InStr(A_LoopFileName, "skip")) ; Skip files with "skip" in the name
+				continue
 			DestinationFolder := GetDestination(A_LoopFileFullPath)
 			if (DestinationFolder = "Compressed")
 				UnZip(A_LoopFileName,A_LoopFileDir,A_LoopFileFullPath)
@@ -212,7 +233,7 @@
 		}
 		if RemoveEmptyFolders
 			RemoveEmptyFolders(MonitoredFolder)
-		FindZipFiles(MonitoredFolder,"Compressed")
+		FindZipFiles(MonitoredFolder,"Processed")
 	
 	;Other
 		RemoveToolTip:
