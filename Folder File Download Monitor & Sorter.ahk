@@ -29,18 +29,24 @@
 
 	;What filetypes belong to what group, and what their folder name should be sorted into.
 		FiletypeObjectArray := [] ;Array needs to be initiated first to work.
-		PushFiletypeToArray(FiletypeObjectArray, ["zip","7z","rar","r00","001"], "Compressed")
-		PushFiletypeToArray(FiletypeObjectArray, ["jpg", "bmp", "gif", "gifv", "webm", "png", "jpeg", "swf", "tga", "tiff", "exr", "psd"], "Images")
-		PushFiletypeToArray(FiletypeObjectArray, ["txt", "nfo", "rtf", "pdf", "docx", "doc", "pptx", "ppt"], "Documents")
-		PushFiletypeToArray(FiletypeObjectArray, ["xlsx", "xls", "csv"], "Spreadsheets")
-		PushFiletypeToArray(FiletypeObjectArray, ["mp3", "flac", "wav", "ogg"], "Audio")
-		PushFiletypeToArray(FiletypeObjectArray, ["avi", "mpg", "mpeg", "mov", "mp4", "mkv", "wmv"], "Videos")
-		PushFiletypeToArray(FiletypeObjectArray, ["exe", "msi", "jar", "cmd", "bat", "ahk", "sh"], "Programs")
-		PushFiletypeToArray(FiletypeObjectArray, ["ttf", "otf", "woff"], "Fonts")
-		PushFiletypeToArray(FiletypeObjectArray, ["cpp", "java", "py", "html", "css", "js"], "Code")
-		PushFiletypeToArray(FiletypeObjectArray, ["sqlite", "mdb", "sql"], "Databases")
-		PushFiletypeToArray(FiletypeObjectArray, ["ini", "conf", "json", "xml"], "Configuration")
-		PushFiletypeToArray(FiletypeObjectArray, ["bak"], "Backup")
+		PushFiletypeToArray(FiletypeObjectArray, ["doc", "docx", "pdf", "txt", "rtf", "odt", "md", "tex", "nfo"], "Documents")
+		PushFiletypeToArray(FiletypeObjectArray, ["xls", "xlsx", "ods", "csv"], "Spreadsheets")
+		PushFiletypeToArray(FiletypeObjectArray, ["ppt", "pptx", "odp"], "Slides")
+		PushFiletypeToArray(FiletypeObjectArray, ["jpg", "jpeg", "png", "gif", "bmp", "tiff", "svg", "ai", "eps", "psd", "tga", "exr"], "Images")
+		PushFiletypeToArray(FiletypeObjectArray, ["mp3", "wav", "aac", "flac", "ogg", "aif", "aiff", "mid", "midi"], "Audio")
+		PushFiletypeToArray(FiletypeObjectArray, ["mp4", "mov", "wmv", "flv", "avi", "mkv", "mpeg", "mpg", "veg", "prproj", "aep"], "Videos")
+		PushFiletypeToArray(FiletypeObjectArray, ["js", "html", "htm", "css", "py", "java", "c", "cpp", "php", "rb", "swift", "json", "pyw", "vbs"], "Code")
+		PushFiletypeToArray(FiletypeObjectArray, ["zip", "rar", "tar", "tar.gz", "7z", "r00", "001"], "Compressed")
+		PushFiletypeToArray(FiletypeObjectArray, ["exe", "bat", "sh", "msi", "jar", "cmd", "ahk"], "Executable")
+		PushFiletypeToArray(FiletypeObjectArray, ["stl", "obj", "fbx", "dae", "3ds", "blend", "max", "ma", "mb"], "3D Models")
+		PushFiletypeToArray(FiletypeObjectArray, ["dwg", "dxf", "skp", "step", "stp", "igs", "iges", "ipt", "iam"], "CAD Files")
+		PushFiletypeToArray(FiletypeObjectArray, ["svg", "ai", "eps"], "Vector Graphics")
+		PushFiletypeToArray(FiletypeObjectArray, ["pdb", "fits"], "Scientific Data")
+		PushFiletypeToArray(FiletypeObjectArray, ["iso", "dmg"], "Archiving & Disk Images")
+		PushFiletypeToArray(FiletypeObjectArray, ["aep", "prproj", "veg"], "Animation & Video Editing")
+		PushFiletypeToArray(FiletypeObjectArray, ["unity", "gmx"], "Game Development")
+		PushFiletypeToArray(FiletypeObjectArray, ["step", "stp", "igs", "iges"], "Engineering")
+		PushFiletypeToArray(FiletypeObjectArray, ["vmdk", "ova", "ovf"], "Virtual Machines & Containers")
 
 ;---------------------------------------------------------------------------------------------------------------------------------------;
 ; Main
